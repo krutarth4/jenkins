@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+    environment {
+        name = 'ana'
+    }
+    parameters{
+        string(name:'Person', defaultValue:'Krutarth Parwal', description: 'Who is this?')
+        booleanParam(name:'isPerson', defaultValue: true, description: '?')
+        choice(name:'city', choices: ['jaipur', 'mumbai','kota'], description: '?')
+    }
+    stages {
+        stage('new') {
+            steps {
+                sh '''
+                date
+                pwd
+                cal 2023
+                '''
+                sh 'echo "${Person}"'
+            }
+        }
+         stage('environment variable') {
+             environment{
+                 name="Krutarth"
+             }
+            steps {
+                sh 'echo "${BUILD_ID}"'
+                sh 'echo "${name}"'
+                
+            }
+        }
+        stage('build') {
+            steps {
+                echo 'building the project'
+                 sh 'echo "${name}"'
+            }
+        }
+        stage('test') {
+            steps {
+                echo 'Deploy on test'
+            }
+        }
+        stage('deploy') {
+            input{
+                message "continue"
+                ok "Please go ahead"
+            }
+            steps {
+                echo 'deploy on prod'
+            }
+        }
+    }
+    post{
+        always{
+            echo "Will be executed always"
+            
+        }
+        failure {
+           echo 'The Pipeline failed :('
+        }
+        success {
+           echo 'The Pipeline success'
+        }
+       
+    }
+}
